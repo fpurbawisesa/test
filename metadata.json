@@ -1,0 +1,6 @@
+{
+  "name": "EDU ADVENTURE – Dunia Petualangan Belajar",
+  "description": "Game edukatif 2D Pixel Art RPG Multiplayer Co-op untuk siswa SD dengan petualangan interaktif, kuis perebutan poin, kustomisasi avatar, dan dashboard analitik guru real-time.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

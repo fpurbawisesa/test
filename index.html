@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function() {
+        // 1. Make window.fetch writable if it only has a getter in the sandbox
+        try {
+          var origFetch = window.fetch;
+          var curFetch = origFetch;
+          Object.defineProperty(window, 'fetch', {
+            configurable: true,
+            enumerable: true,
+            get: function() { return curFetch; },
+            set: function(fn) { curFetch = fn; }
+          });
+        } catch (e) {}
+
+        // 2. Prevent extension errors (chrome-extension://, ethereum, fetch) from bubbling
+        window.addEventListener('error', function(event) {
+          var msg = event.message ? String(event.message) : '';
+          var file = event.filename ? String(event.filename) : '';
+          if (
+            file.indexOf('chrome-extension://') !== -1 ||
+            file.indexOf('moz-extension://') !== -1 ||
+            msg.indexOf('ethereum') !== -1 ||
+            msg.indexOf('Cannot redefine property') !== -1 ||
+            msg.indexOf('fetch of #<Window>') !== -1 ||
+            msg.indexOf('read only property \'fetch\'') !== -1
+          ) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(event) {
+          var reasonStr = event.reason ? String(event.reason) : '';
+          if (
+            reasonStr.indexOf('ethereum') !== -1 ||
+            reasonStr.indexOf('chrome-extension://') !== -1 ||
+            reasonStr.indexOf('fetch') !== -1
+          ) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+          }
+        }, true);
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>EDU ADVENTURE – Dunia Petualangan Belajar</title>
+    <meta name="description" content="Game edukatif 2D Pixel Art RPG Multiplayer Co-op untuk siswa SD dengan petualangan interaktif, kuis perebutan poin, kustomisasi avatar, dan dashboard analitik guru real-time." />
+    <meta property="og:title" content="EDU ADVENTURE – Dunia Petualangan Belajar" />
+    <meta property="og:description" content="Game edukatif 2D Pixel Art RPG Multiplayer Co-op untuk siswa SD dengan petualangan interaktif, kuis perebutan poin, kustomisasi avatar, dan dashboard analitik guru real-time." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-950 text-slate-100 select-none overflow-hidden touch-none font-sans antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
